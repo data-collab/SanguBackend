@@ -1,5 +1,5 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs"); // Use bcryptjs instead of bcrypt for compatibility
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { registerValidationRules, validateRegistration } = require("../validators/validator");
@@ -22,7 +22,7 @@ router.post("/register", registerValidationRules(), async (req, res) => {
             return res.status(400).json({ error: "Email already in use" });
         }
 
-        // Hash password
+        // Hash password using bcryptjs (async way)
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create a new user and save to the database
@@ -54,7 +54,6 @@ router.post("/register", registerValidationRules(), async (req, res) => {
     }
 });
 
-
 // Login Route
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
@@ -64,7 +63,7 @@ router.post("/login", async (req, res) => {
         const user = await User.findOne({ email });
         if (!user) return res.status(400).json({ error: "User not found" });
 
-        // Check if password matches
+        // Check if password matches using bcryptjs (async way)
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
 
