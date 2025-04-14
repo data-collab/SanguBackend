@@ -11,7 +11,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:4200', // Dynamic frontend URL from environment variable
+  origin: 'http://localhost:4200', // Your Angular frontend URL
   credentials: true               // Required to send cookies
 }));
 app.use(cookieParser());           // To parse JWT from cookies
@@ -30,7 +30,7 @@ mongoose.connect(process.env.MONGO_URI)
   });
 
 // Start the server
-const PORT = process.env.PORT || 5000; // Dynamic port from environment variable (Heroku sets this)
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
 });
