@@ -11,10 +11,9 @@ const budgetRoutes = require("./routes/budget");
 const app = express();
 
 // CORS Middleware
-// For local dev allow localhost:4200, for production replace with your frontend deployed URL
 const allowedOrigins = [
   'http://localhost:4200',
-  process.env.FRONTEND_URL // Add this environment variable to store your deployed frontend URL
+  process.env.FRONTEND_URL // Your deployed frontend URL
 ].filter(Boolean);
 
 app.use(cors({
@@ -29,12 +28,12 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/budget", budgetRoutes);
 
-// Serve Angular frontend from the 'dist' folder
-app.use(express.static(path.join(__dirname, 'dist/sangu-finance-app')));
+// Serve Angular frontend from the correct 'dist/sangu-finance-app/browser' folder
+app.use(express.static(path.join(__dirname, 'dist/sangu-finance-app/browser')));
 
 // Fallback to index.html for Angular routing support
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/sangu-finance-app/index.html'));
+  res.sendFile(path.join(__dirname, 'dist/sangu-finance-app/browser/index.html'));
 });
 
 // Connect to MongoDB with MONGO_URI from environment variables
@@ -45,7 +44,7 @@ mongoose.connect(process.env.MONGO_URI)
     process.exit(1);
   });
 
-// Global error handler (should be last middleware)
+// Global error handler (last middleware)
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Something went wrong on the server!" });
